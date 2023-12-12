@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhonePe</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        #container {
+            width: 320px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #header {
+            background: #654caf;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #content {
+            padding: 20px;
+        }
+
+        #amount, #recipient {
+            font-weight: bold;
+        }
+
+        #processing, #success, #failure {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #processing img, #success img, #failure img {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+        }
+
+        #pay-button {
+            background: #654caf;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="header">
+            <h1>PhonePe</h1>
+        </div>
+        <div id="content">
+            <p>Amount: <span id="amount"></span></p>
+            <p>Recipient: <span id="recipient"></span></p>
+            <div id="processing">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6hr-jrMPEfrT3dR-qQ9CFs_5-gXPjuTYv3A&usqp=CAU" alt="Processing">
+                <p>Please wait...</p>
+            </div>
+            <div id="success">
+                <img src="data:image/png;base64,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" alt="Success">
+                <p>Payment Successful!</p>
+                <p>Transaction ID: <span id="transaction-id"></span></p>
+            </div>
+            <div id="failure">
+                <img src="data:image/png;base64,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" alt="Failure">
+                <p>Payment Failed!</p>
+                <p>Reason: <span id="reason"></span></p>
+            </div>
+        </div>
+        <button id="pay-button" onclick="performPayment(100, 'John Doe')">Pay</button>
+    </div>
+
+    <script>
+        async function initiatePayment(amount, recipient) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (Math.random() > 0.5) {
+                        resolve({
+                            amount,
+                            recipient,
+                            transactionId: "1234567890",
+                            message: "Payment Successful!",
+                        });
+                    } else {
+                        reject({
+                            message: "Payment Failed!",
+                            reason: "Insufficient funds",
+                        });
+                    }
+                }, 1000);
+            });
+        }
+
+        function showProcessingUI() {
+            document.getElementById('processing').style.display = 'flex';
+        }
+
+        function showSuccessUI(paymentData) {
+            document.getElementById('success').style.display = 'flex';
+            document.getElementById('transaction-id').innerText = paymentData.transactionId;
+        }
+
+        function showFailureUI(error) {
+            document.getElementById('failure').style.display = 'flex';
+            document.getElementById('reason').innerText = error.reason;
+        }
+
+        async function performPayment(amount, recipient) {
+            showProcessingUI();
+
+            try {
+                const paymentData = await initiatePayment(amount, recipient);
+                showSuccessUI(paymentData);
+            } catch (error) {
+                showFailureUI(error);
+            }
+        }
+    </script>
+</body>
+</html>
